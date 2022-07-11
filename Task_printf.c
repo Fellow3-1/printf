@@ -10,68 +10,35 @@
  * @return number of characters printed 
  */
 
-int (*find_function(const char *format))(va_list)
-{
-	unsigned int i = 0;
-	code_f find_f[] = {
-		{"s", print_string},
-		{"c", print_char},
-		{"i", print_int},
-		{"d", print_dec},
-		{NULL, NULL}
-	};
-
-	while (find_f[i].sc)
-	{
-		if (find_f[i].sc[0] == (*format))
-			return (find_f[i].f);
-		i++;
-	}
-	return (NULL);
-}
-
-/**
-  * _printf - function to produce output
-  * @format: format (char, string, int, dec)
-  * Return: size of output text
-  */
-
 int _printf(const char *format, ...)
 {
-	va_list list;
-	int (*f)(va_list);
-	unsigned int i = 0, cprint = 0;
+	va_list valist;
+	unsigned int i = 0;
+	unsigned int result = 0;
 
 	if (format == NULL)
-		return (-1);
-	va_start(list, format);
-	while (format[i])
 	{
-		while (format[i] != '%' && format[i])
-		{
-			_putchar(format[i]);
-			cprint++;
-			i++;
-		}
-		if (format[i] == '\0')
-			return (cprint);
-		f = find_function(&format[i + 1]);
-		if (f != NULL)
-		{
-			cprint += f(list);
-			i += 2;
-			continue;
-		}
-		if (!format[i + 1])
-			return (-1);
-		_putchar(format[i]);
-		cprint++;
-		if (format[i + 1] == '%')
-			i += 2;
-		else
-			i++;
+		return (-1);
 	}
-	va_end(list);
-	return (cprint);
-}
+	va_start(valist, format);
+
+	for (i = 0; format[i] != '\0'; i++)
+	{
+		if (format[i] == '\0' || (format[i] == '%' && !format[i + 1]))
+		{
+			return (-1);
+		}
+		else if (format[i] == '%' && (format[i + 1] == 'd' || format[i + 1] == 'i' ||
+					format[i + 1] == 's' || format[i + 1] == 'c' || format[i + 1] == '%'))
+		{
+			result += (*format_conversion(format[i + 1]))(valist);
+			i++;
+		}
+		else
+		{
+			result += _putchar(format[i]);
+		}
+	}
+	va_end(valist);
+	return (result);
 }
