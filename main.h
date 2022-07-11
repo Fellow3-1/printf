@@ -9,7 +9,7 @@ int print_char(va_list c);
 int print_string(va_list s);
 int print_string(va_list s);
 int print_int(va_list i);
-
+int (*format_conversion(char s))(va_list);
 
 /**
   * struct code_format - Struct format
