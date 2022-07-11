@@ -18,10 +18,10 @@ int main(void)
 
     write (1, "Std:\n" ,4);
     count_std = printf("Test String\n")
-    printf("I printed %d characters\n count_std");
+    printf("I printed %d characters\n", count_std);
 
     write (1, "Group_Test:\n" ,11);
-    printf("I printed %d characters\n count_grp");
+    printf("I printed %d characters\n",  count_grp);
     _printf("Test String\n");
 
     return (0);

@@ -1,5 +1,4 @@
 #include <stdarg.h>
-#include <stdio.h>
 #include <unistd.h>
 #include "main.h"
 
@@ -11,44 +10,68 @@
  * @return number of characters printed 
  */
 
-int _printf(const char *format, ...){
-  int count = 0, i;
-  
-  va_list data;
-  va_start(data, format);
+int (*find_function(const char *format))(va_list)
+{
+	unsigned int i = 0;
+	code_f find_f[] = {
+		{"s", print_string},
+		{"c", print_char},
+		{"i", print_int},
+		{"d", print_dec},
+		{NULL, NULL}
+	};
 
-  // _printf("%s", 'String')
-  
-  for (i = 0; format[i] != '\0'; ){
-    
-    /* count the number of characters and print to the screen each character counted */
-    if (format[i] != '%'){
-      count += _putchar(format[i]);
-      i++;
-    }
-    else if (format[i] == '%' && format[i+1] !=' '){
-      switch (format[i + 1]){
-        case 'c':
-            /* print the character from the variadic_arguments */
-            count += _putchar(va_arg(data, int));
-            break;
-        case 's':
-            count += print_string(va_arg(data, char *));
-            break;
-        case '%':
-            /* print the character from the variadic_arguments */
-            count += _putchar('%');
-            break;
-        default:
-            break;
-      }
-      
-      i += 2;
-    }
-    
-    
-  }
-  
+	while (find_f[i].sc)
+	{
+		if (find_f[i].sc[0] == (*format))
+			return (find_f[i].f);
+		i++;
+	}
+	return (NULL);
+}
 
-  return (count);
+/**
+  * _printf - function to produce output
+  * @format: format (char, string, int, dec)
+  * Return: size of output text
+  */
+
+int _printf(const char *format, ...)
+{
+	va_list list;
+	int (*f)(va_list);
+	unsigned int i = 0, cprint = 0;
+
+	if (format == NULL)
+		return (-1);
+	va_start(list, format);
+	while (format[i])
+	{
+		while (format[i] != '%' && format[i])
+		{
+			_putchar(format[i]);
+			cprint++;
+			i++;
+		}
+		if (format[i] == '\0')
+			return (cprint);
+		f = find_function(&format[i + 1]);
+		if (f != NULL)
+		{
+			cprint += f(list);
+			i += 2;
+			continue;
+		}
+		if (!format[i + 1])
+			return (-1);
+		_putchar(format[i]);
+		cprint++;
+		if (format[i + 1] == '%')
+			i += 2;
+		else
+			i++;
+	}
+	va_end(list);
+	return (cprint);
+}
 }
