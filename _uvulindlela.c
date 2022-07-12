@@ -4,13 +4,17 @@
 #include <main.h>
 
 /**
- * _uvulindlela.c
- * @format
+ * _uvulindlela - 
+ * @format:
  * @...:
- * Return
+ * Return:
  */
 
 int _printf(const char *format, ...)
 {
-	int i
+	int i =
+	int count =
+	int value =
+	va_list 
+
 
