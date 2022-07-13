@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#define NULL ((void *)0)
 
 int _printf(const char *format, ...);
 int _putchar(char c);
