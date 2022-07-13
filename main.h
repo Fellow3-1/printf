@@ -18,15 +18,22 @@ int _power_recursion(int x, int y);
 int to_Hexa(unsigned int num);
 
 /**
- * struct code_format - Struct format
+ * struct func - Struct for specifier to poiter
  * @sc: The specifiers
  * @f: The function associated
+ * @f: function to handle printing
+ * @t: character to compare
  */
 
-typedef struct code_format
+typedef struct func
 {
 	char *sc;
+	char *t;
 	int (*f)(va_list);
-} code_f;
+} fun_t;
+
+int print_char(va_list);
+int print(va_list);
+int print_cent(va_list);
 
 #endif
