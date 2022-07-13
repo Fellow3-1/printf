@@ -1,80 +1,67 @@
 #include <stdarg.h>
-#include "main.h"
 #include <stdio.h>
+#include <unistd.h>
+#include "main.h"
 
 /**
-  * _printf - produces output according to a format.
-  * @format: a character string.
-  * Return: number of characters printed(
-  * excluding the null terminator)
-  */
+ * _printf - prints a string in a formatted way
+ * @format: string to print (char *)
+ * @...: variadic parameters (unknown)
+ *
+ * Return: number of characters printed
+ */
 
 int _printf(const char *format, ...)
 {
-	int count;
-	int total = 0;
+	int i = 0;
+	int count = 0;
+	int value = 0;
 	va_list args;
-	int flag = 0;
-
-	if (format == NULL)
-		return (0);
-
 	va_start(args, format);
-	for (count = 0; *(format + count) != '\0'; count++)
-	{
-		if (format[count] == '%')
+	int (*f)(va_list);
+	
+	/*Prevent parsing a null pointer*/
+	if (format == NULL)
+		return (-1);
+	
+	/*Print each character of string*/
+	while (format[i])
+	{	
+		if (format[i] != '%')
 		{
-			flag = 1;
+			value = write(1,&format[i],1);
+			count = count + value;
+			i++;
+			continue;
 		}
-		else if (flag == 1)
+
+		if (format[i] == '%')
 		{
-			flag = 0;
-			switch (format[count])
+			f = check_specifier(&format[i + 1]);
+			if (f != NULL)
 			{
-				case 'c':
-					_putchar(va_arg(args, int));
-					total += 1;
-					break;
-				case 's':
-					total += _print_str(va_arg(args, char *));
-					break;
-				case '%':
-					_putchar('%');
-					total += 1;
-					break;
-						case 'd':
-					total += _print_int((long)(va_arg(args, int)));
-					break;
-				case 'i':
-					total += _print_int((long)(va_arg(args, int)));
-					break;
-				case 'b':
-					total += to_Binary(va_arg(args, int));
-					break;
-				case 'u':
-					total += _print_int(va_arg(args, unsigned int));
-					break;
-				case 'o':
-					total += to_Octal(va_arg(args, int));
-					break;
-				case 'x':
-					total += to_Hexa(va_arg(args, int));
-					break;
-				case 'X':
-					total += to_Hexa(va_arg(args, int));
-					break;
-				default:
-					_putchar('%');
-					_putchar(format[count]);
-					total += 2;
+				value = f(args);
+				count = count + value;
+				i = i + 2;
+				continue;
 			}
-		}
-		else
-		{
-			_putchar(format[count]);
-			total += 1;
+
+			if (format[i + 1] == '\0')
+			{
+				break;
+			}
+
+			if (format[i + 1] != '\0')
+			{
+				value = write(1, &format[i + 1], 1);
+				count = count + value;
+                        	i = i + 2;
+                        	continue;
+			}
+
+
 		}
 	}
-	va_end(args);
-	return (total);
+
+	return (count);
 }
